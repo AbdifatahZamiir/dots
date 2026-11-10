@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "@/lib/products";
+import { getProducts } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 import Logo from "@/components/Logo";
 import Lookbook from "@/components/Lookbook";
 import HeroBackground from "@/components/HeroBackground";
 
-export default function Home() {
+export const revalidate = 60; // pick up CMS changes within a minute
+
+export default async function Home() {
+  const products = await getProducts();
   return (
     <>
       {/* Hero */}

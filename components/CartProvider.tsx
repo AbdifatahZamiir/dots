@@ -2,23 +2,25 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-export type CartItem = { id: string; color: string; size: string; qty: number };
+// The cart keeps a snapshot of what the shopper saw (name, price, image) for display.
+// Checkout re-checks every price on the server, so the snapshot can't be abused.
+export type CartKey = { id: string; color: string; size: string };
+export type CartItem = CartKey & { qty: number; name: string; price: number; image: string };
 
 type CartContext = {
   items: CartItem[];
   open: boolean;
   setOpen: (open: boolean) => void;
   add: (item: Omit<CartItem, "qty">) => void;
-  update: (item: Omit<CartItem, "qty">, qty: number) => void;
+  update: (key: CartKey, qty: number) => void;
   clear: () => void;
   count: number;
 };
 
 const Ctx = createContext<CartContext | null>(null);
-const KEY = "dots-cart-v2";
+const KEY = "dots-cart-v3";
 
-const same = (a: Omit<CartItem, "qty">, b: Omit<CartItem, "qty">) =>
-  a.id === b.id && a.color === b.color && a.size === b.size;
+const same = (a: CartKey, b: CartKey) => a.id === b.id && a.color === b.color && a.size === b.size;
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -49,9 +51,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setOpen(true);
   };
 
-  const update: CartContext["update"] = (item, qty) =>
+  const update: CartContext["update"] = (key, qty) =>
     setItems((prev) =>
-      prev.map((i) => (same(i, item) ? { ...i, qty } : i)).filter((i) => i.qty > 0)
+      prev.map((i) => (same(i, key) ? { ...i, qty } : i)).filter((i) => i.qty > 0)
     );
 
   const clear = () => setItems([]);

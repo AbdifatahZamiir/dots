@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
-import { formatPrice, type Product } from "@/lib/products";
+import { formatPrice } from "@/lib/format";
+import type { Product } from "@/lib/types";
 
 export default function ProductView({ product }: { product: Product }) {
   const { add } = useCart();
@@ -22,7 +23,14 @@ export default function ProductView({ product }: { product: Product }) {
 
   function addToCart() {
     if (!size) return;
-    add({ id: product.id, color: variant.name, size });
+    add({
+      id: product.id,
+      color: variant.name,
+      size,
+      name: product.name,
+      price: product.price,
+      image: variant.images[0],
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   }

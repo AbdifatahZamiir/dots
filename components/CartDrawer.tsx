@@ -3,18 +3,15 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
-import { formatPrice, getProduct, getVariant } from "@/lib/products";
+import { formatPrice } from "@/lib/format";
 
 export default function CartDrawer() {
   const { items, open, setOpen, update } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const lines = items.flatMap((i) => {
-    const product = getProduct(i.id);
-    return product ? [{ ...i, product, variant: getVariant(product, i.color) }] : [];
-  });
-  const subtotal = lines.reduce((s, l) => s + l.product.price * l.qty, 0);
+  const lines = items;
+  const subtotal = lines.reduce((s, l) => s + l.price * l.qty, 0);
 
   async function checkout() {
     setLoading(true);
@@ -64,26 +61,28 @@ export default function CartDrawer() {
               Your cart is empty.
             </div>
           ) : (
-            lines.map(({ product, variant, color, size, qty }) => {
-              const key = { id: product.id, color, size };
+            lines.map(({ id, name, price, image, color, size, qty }) => {
+              const key = { id, color, size };
               return (
-                <div key={product.id + color + size} className="flex gap-4 border-b border-line py-5">
+                <div key={id + color + size} className="flex gap-4 border-b border-line py-5">
                   <div className="relative h-28 w-22 shrink-0 overflow-hidden bg-cream">
-                    <Image
-                      src={variant.images[0]}
-                      alt={`${product.name} in ${variant.name}`}
-                      fill
-                      sizes="88px"
-                      className="object-cover object-top"
-                    />
+                    {image && (
+                      <Image
+                        src={image}
+                        alt={`${name} in ${color}`}
+                        fill
+                        sizes="88px"
+                        className="object-cover object-top"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col">
                     <div className="flex justify-between gap-2 text-sm">
-                      <p className="font-medium">{product.name}</p>
-                      <p>{formatPrice(product.price * qty)}</p>
+                      <p className="font-medium">{name}</p>
+                      <p>{formatPrice(price * qty)}</p>
                     </div>
                     <p className="mt-1 text-xs text-muted">
-                      {variant.name} · Size {size}
+                      {color} · Size {size}
                     </p>
                     <div className="mt-auto flex items-center gap-3 text-sm">
                       <button

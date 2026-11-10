@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { products, getProduct } from "@/lib/products";
+import { getProducts, getProduct } from "@/lib/products";
 import ProductView from "@/components/ProductView";
 import ProductCard from "@/components/ProductCard";
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }));
+export const revalidate = 60; // pick up CMS changes within a minute
+
+export async function generateStaticParams() {
+  return (await getProducts()).map((p) => ({ id: p.id }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const product = getProduct((await params).id);
+  const product = await getProduct((await params).id);
   return {
     title: product ? `${product.name} — DOTS` : "DOTS",
     description: product?.description,
@@ -17,10 +19,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const product = getProduct((await params).id);
+  const product = await getProduct((await params).id);
   if (!product) notFound();
 
-  const related = products.filter((p) => p.id !== product.id).slice(0, 3);
+  const related = (await getProducts()).filter((p) => p.id !== product.id).slice(0, 3);
 
   return (
     <>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatPrice, type Product } from "@/lib/products";
+import { formatPrice } from "@/lib/format";
+import type { Product } from "@/lib/types";
 
 export default function ProductCard({ product, priority }: { product: Product; priority?: boolean }) {
   const main = product.colors[0].images[0];

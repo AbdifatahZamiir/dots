@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { getProduct } from "@/lib/products";
+import { getProducts } from "@/lib/products";
 
 type Item = { id: string; color: string; size: string; qty: number };
 
@@ -15,8 +15,9 @@ export async function POST(req: Request) {
   const { items } = (await req.json()) as { items: Item[] };
 
   // Prices always come from the server-side product list, never from the browser.
-  const line_items = (items ?? []).flatMap((item) => {
-    const product = getProduct(item.id);
+  const products = await getProducts();
+  const line_items = (Array.isArray(items) ? items : []).flatMap((item) => {
+    const product = products.find((p) => p.id === item.id);
     const qty = Math.floor(Number(item.qty));
     if (
       !product ||
