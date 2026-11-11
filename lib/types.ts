@@ -9,6 +9,7 @@ export type Product = {
   name: string;
   category: string;
   price: number; // in cents (12900 = $129.00)
+  compareAt?: number; // original price in cents, when on sale
   description: string;
   details: string[];
   sizes: string[];

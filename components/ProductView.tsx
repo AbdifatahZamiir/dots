@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
-import { formatPrice } from "@/lib/format";
+import Price, { discountPercent } from "./Price";
 import type { Product } from "@/lib/types";
 
 export default function ProductView({ product }: { product: Product }) {
@@ -46,7 +46,7 @@ export default function ProductView({ product }: { product: Product }) {
                 key={src}
                 onClick={() => setImageIdx(i)}
                 aria-label={`Show image ${i + 1}`}
-                className={`relative h-24 w-[4.5rem] shrink-0 overflow-hidden bg-cream transition ${
+                className={`relative h-24 w-[4.5rem] shrink-0 overflow-hidden bg-mist transition ${
                   i === imageIdx ? "ring-1 ring-ink" : "opacity-60 hover:opacity-100"
                 }`}
               >
@@ -55,7 +55,7 @@ export default function ProductView({ product }: { product: Product }) {
             ))}
           </div>
         )}
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-cream">
+        <div className="relative aspect-[3/4] w-full overflow-hidden bg-mist">
           <Image
             key={images[imageIdx]}
             src={images[imageIdx]}
@@ -71,10 +71,17 @@ export default function ProductView({ product }: { product: Product }) {
       {/* Info */}
       <div className="md:sticky md:top-28 md:self-start">
         <p className="mb-3 text-[11px] uppercase tracking-[0.3em] text-muted">{product.category}</p>
-        <h1 className="text-3xl font-light uppercase tracking-[0.15em] sm:text-4xl">
+        <h1 className="text-2xl font-normal uppercase tracking-[0.12em] sm:text-3xl">
           {product.name}
         </h1>
-        <p className="mt-4 text-lg">{formatPrice(product.price)}</p>
+        <div className="mt-4 flex items-center gap-3">
+          <Price price={product.price} compareAt={product.compareAt} className="text-lg" />
+          {product.compareAt && (
+            <span className="bg-sale px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-paper">
+              -{discountPercent(product.price, product.compareAt)}%
+            </span>
+          )}
+        </div>
         <p className="mt-6 text-sm leading-relaxed text-muted">{product.description}</p>
 
         {/* Color */}

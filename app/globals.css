@@ -8,9 +8,11 @@
   --color-sand: #d8cbb6;
   --color-stone: #bdbab5;
   --color-cream: #f2eee7;
-  --color-paper: #f7f5f1;
-  --color-muted: #77736d;
-  --color-line: #e3ded6;
+  --color-paper: #ffffff; /* clean white retail background */
+  --color-mist: #f4f3f1; /* image placeholders */
+  --color-muted: #6f6f6f;
+  --color-line: #e6e6e6;
+  --color-sale: #b3261e;
   --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 }

@@ -15,13 +15,21 @@ const QUERY = `*[_type == "product" && defined(slug.current)]
     name,
     category,
     price,
+    compareAtPrice,
     "description": coalesce(description, ""),
     "details": coalesce(details, []),
     "sizes": coalesce(sizes, []),
     "colors": colors[]{ name, hex, "images": images[].asset->url }
   }`;
 
-type Raw = Omit<Product, "price"> & { price: number | null };
+type Raw = Omit<Product, "price" | "compareAt"> & {
+  price: number | null;
+  compareAtPrice?: number | null;
+};
+
+export function categoriesOf(products: Product[]) {
+  return [...new Set(products.map((p) => p.category))];
+}
 
 export async function getProducts(): Promise<Product[]> {
   if (!isSanityConfigured) return localProducts;
@@ -30,9 +38,13 @@ export async function getProducts(): Promise<Product[]> {
   const rows = await client.fetch<Raw[]>(QUERY, {}, { next: { revalidate: 60, tags: ["product"] } });
 
   return rows
-    .map((p) => ({
+    .map(({ compareAtPrice, ...p }) => ({
       ...p,
       price: Math.round((p.price ?? 0) * 100), // CMS stores dollars, the site uses cents
+      compareAt:
+        compareAtPrice && compareAtPrice > (p.price ?? 0)
+          ? Math.round(compareAtPrice * 100)
+          : undefined,
       colors: (p.colors ?? [])
         .map((c) => ({ ...c, images: (c.images ?? []).filter(Boolean) }))
         .filter((c) => c.name && c.images.length > 0),
