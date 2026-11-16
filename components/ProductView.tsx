@@ -74,6 +74,9 @@ export default function ProductView({ product }: { product: Product }) {
         <h1 className="text-2xl font-normal uppercase tracking-[0.12em] sm:text-3xl">
           {product.name}
         </h1>
+        {product.fit && (
+          <p className="mt-2 text-xs uppercase tracking-[0.15em] text-muted">{product.fit} fit</p>
+        )}
         <div className="mt-4 flex items-center gap-3">
           <Price price={product.price} compareAt={product.compareAt} className="text-lg" />
           {product.compareAt && (

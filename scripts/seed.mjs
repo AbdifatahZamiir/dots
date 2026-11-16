@@ -49,6 +49,7 @@ for (const [i, p] of products.entries()) {
     name: p.name,
     slug: { _type: "slug", current: p.id },
     category: p.category,
+    ...(p.fit ? { fit: p.fit } : {}),
     price: p.price / 100,
     ...(p.compareAt ? { compareAtPrice: p.compareAt / 100 } : {}),
     description: p.description,

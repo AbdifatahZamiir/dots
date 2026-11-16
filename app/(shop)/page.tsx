@@ -4,6 +4,10 @@ import { categoriesOf, getProducts } from "@/lib/products";
 import type { Product } from "@/lib/types";
 import ProductCard from "@/components/ProductCard";
 import HeroSlider, { type Slide } from "@/components/HeroSlider";
+import CategoryStrip, { type CategoryTile } from "@/components/CategoryStrip";
+import CategoryFocus from "@/components/CategoryFocus";
+import RecentlyViewed from "@/components/RecentlyViewed";
+import TrustBar from "@/components/TrustBar";
 import Lookbook from "@/components/Lookbook";
 import Logo from "@/components/Logo";
 
@@ -36,46 +40,43 @@ const slides: Slide[] = [
 export default async function Home() {
   const products = await getProducts();
   const categories = categoriesOf(products);
-  const knitwear = products.filter((p) => p.category === "Knitwear");
+  const inCategory = (c: string) => products.filter((p) => p.category === c);
+
+  // One tile per category: first product's photo, second photo revealed on hover.
+  const tiles: CategoryTile[] = categories.map((c) => {
+    const items = inCategory(c);
+    const first = items[0];
+    const hoverImage =
+      items[1]?.colors[0].images[0] ??
+      first.colors[1]?.images[0] ??
+      first.colors[0].images[1];
+    return { name: c, image: first.colors[0].images[0], hoverImage, count: items.length };
+  });
+
+  // "Categories in Focus": the two biggest categories, with a banner photo
+  // that differs from the product cards shown next to it.
+  const focus = [...categories]
+    .sort((a, b) => inCategory(b).length - inCategory(a).length)
+    .slice(0, 2)
+    .map((c) => {
+      const items = inCategory(c);
+      const first = items[0];
+      const last = first.colors[first.colors.length - 1];
+      const image = first.colors.length > 1 ? last.images[0] : first.colors[0].images[1] ?? last.images[0];
+      return { category: c, image, products: items };
+    });
 
   return (
     <>
       <HeroSlider slides={slides} />
 
-      {/* Shop by category */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-        <SectionHeading title="Shop by category" />
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {categories.map((c) => {
-            const p = products.find((x) => x.category === c)!;
-            return (
-              <Link
-                key={c}
-                href={`/shop?category=${encodeURIComponent(c)}`}
-                className="group relative aspect-[3/4] overflow-hidden bg-mist"
-              >
-                <Image
-                  src={p.colors[0].images[0]}
-                  alt={c}
-                  fill
-                  sizes="(min-width: 768px) 25vw, 50vw"
-                  className="object-cover object-top transition duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
-                <div className="absolute inset-x-0 bottom-5 text-center text-paper">
-                  <p className="text-sm font-medium uppercase tracking-[0.2em]">{c}</p>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.2em] underline underline-offset-4 opacity-90">
-                    Shop now
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+      {/* Category strip (edge to edge, hover to reveal) */}
+      <CategoryStrip tiles={tiles} />
 
       {/* New in */}
       <ProductRow title="New in" href="/shop" products={products.slice(0, 8)} total={products.length} />
+
+      {focus[0] && <CategoryFocus {...focus[0]} />}
 
       {/* Full-width banner */}
       <section className="relative h-[75vh] min-h-[420px] overflow-hidden bg-charcoal">
@@ -101,16 +102,13 @@ export default async function Home() {
         </div>
       </section>
 
-      {knitwear.length > 0 && (
-        <ProductRow
-          title="Knitwear"
-          href="/shop?category=Knitwear"
-          products={knitwear.slice(0, 4)}
-          total={knitwear.length}
-        />
-      )}
+      {focus[1] && <CategoryFocus {...focus[1]} reverse />}
+
+      <RecentlyViewed products={products} />
 
       <Lookbook />
+
+      <TrustBar />
 
       {/* About */}
       <section id="about" className="scroll-mt-24 border-t border-line">

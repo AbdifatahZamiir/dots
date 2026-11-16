@@ -14,6 +14,7 @@ const QUERY = `*[_type == "product" && defined(slug.current)]
     "id": slug.current,
     name,
     category,
+    fit,
     price,
     compareAtPrice,
     "description": coalesce(description, ""),

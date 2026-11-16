@@ -81,6 +81,9 @@ export default function ProductCard({ product, priority }: { product: Product; p
         <Link href={href} className="block text-[12px] font-medium uppercase tracking-[0.08em] hover:opacity-60">
           {product.name}
         </Link>
+        {product.fit && (
+          <p className="text-[11px] text-muted">{product.fit} fit</p>
+        )}
         <Price price={product.price} compareAt={product.compareAt} className="text-[12px]" />
         {product.colors.length > 1 && (
           <div className="flex gap-1.5 pt-1">

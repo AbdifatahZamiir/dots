@@ -3,6 +3,7 @@ import Logo from "@/components/Logo";
 import { CartProvider } from "@/components/CartProvider";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
+import BackToTop from "@/components/BackToTop";
 import { categoriesOf, getProducts } from "@/lib/products";
 
 export default async function ShopLayout({ children }: { children: React.ReactNode }) {
@@ -47,6 +48,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
       </footer>
 
       <CartDrawer />
+      <BackToTop />
     </CartProvider>
   );
 }

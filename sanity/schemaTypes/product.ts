@@ -27,6 +27,12 @@ export const product = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: "fit",
+      type: "string",
+      description: "Shown under the product name (optional).",
+      options: { list: ["Regular", "Relaxed", "Oversized", "Slim", "Wide"] },
+    }),
+    defineField({
       name: "price",
       title: "Price (USD)",
       type: "number",
