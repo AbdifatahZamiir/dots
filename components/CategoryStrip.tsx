@@ -35,13 +35,13 @@ export default function CategoryStrip({ tiles }: { tiles: CategoryTile[] }) {
       <div
         ref={ref}
         onScroll={update}
-        className="group/row flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="cat-row flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {tiles.map((t) => (
           <Link
             key={t.name}
             href={`/shop?category=${encodeURIComponent(t.name)}`}
-            className="group relative aspect-[4/5] w-[72%] shrink-0 snap-start overflow-hidden bg-mist transition duration-500 sm:w-[40%] lg:w-0 lg:min-w-[15rem] lg:flex-1 group-hover/row:grayscale-[70%] hover:grayscale-0!"
+            className="cat-tile group relative aspect-[4/5] w-[72%] shrink-0 snap-start overflow-hidden bg-mist sm:w-[40%] lg:w-0 lg:min-w-[15rem] lg:flex-1"
           >
             <Image
               src={t.image}
@@ -66,7 +66,7 @@ export default function CategoryStrip({ tiles }: { tiles: CategoryTile[] }) {
             <div className="absolute inset-0 bg-ink/15 transition duration-500 group-hover:bg-ink/25" />
 
             {/* Spotlight: while the row is hovered, every other tile fades to a soft grey wash */}
-            <div className="pointer-events-none absolute inset-0 bg-paper/0 transition duration-500 group-hover/row:bg-paper/55 group-hover:bg-paper/0!" />
+            <div className="cat-wash pointer-events-none absolute inset-0 bg-paper/55" />
 
             <div className="absolute inset-0 flex flex-col items-center justify-center px-3 text-center text-paper">
               <span className="text-sm font-bold uppercase tracking-[0.08em] drop-shadow-sm transition-transform duration-500 group-hover:-translate-y-2 sm:text-[15px]">

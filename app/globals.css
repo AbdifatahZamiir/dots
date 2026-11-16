@@ -104,6 +104,23 @@ html {
   }
 }
 
+/* Category strip spotlight: hovering one tile washes out the others */
+.cat-tile {
+  transition: filter 0.5s ease;
+}
+.cat-wash {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+@media (hover: hover) {
+  .cat-row:hover .cat-tile:not(:hover) {
+    filter: grayscale(0.75);
+  }
+  .cat-row:hover .cat-tile:not(:hover) .cat-wash {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim {
     animation: none !important;
