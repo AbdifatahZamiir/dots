@@ -11,7 +11,7 @@ const items = [
   },
   {
     title: "Secure checkout",
-    text: "Payments by Stripe",
+    text: "EVC Plus, ZAAD, eDahab & cards",
     path: "M6 10V8a6 6 0 0 1 12 0v2M5 10h14v10H5zM12 14v2",
   },
   {

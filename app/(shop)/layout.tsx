@@ -37,7 +37,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
           <FooterCol title="Customer care">
             <span>Free shipping over $100</span>
             <span>Free returns within 30 days</span>
-            <span>Secure checkout by Stripe</span>
+            <span>Secure checkout by Sifalo Pay</span>
           </FooterCol>
         </div>
         <div className="border-t border-cream/10">

@@ -1,35 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
 import { useCart } from "./CartProvider";
 import { formatPrice } from "@/lib/format";
 
 export default function CartDrawer() {
   const { items, open, setOpen, update } = useCart();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const lines = items;
   const subtotal = lines.reduce((s, l) => s + l.price * l.qty, 0);
-
-  async function checkout() {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
-      });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-      else setError(data.error || "Checkout failed");
-    } catch {
-      setError("Checkout failed");
-    }
-    setLoading(false);
-  }
 
   return (
     <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}>
@@ -120,15 +100,14 @@ export default function CartDrawer() {
               <span className="text-sm uppercase tracking-[0.2em]">Subtotal</span>
               <span>{formatPrice(subtotal)}</span>
             </div>
-            <p className="mb-5 text-xs text-muted">Shipping and taxes calculated at checkout.</p>
-            {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
-            <button
-              onClick={checkout}
-              disabled={loading}
-              className="w-full bg-ink py-4 text-xs font-medium uppercase tracking-[0.3em] text-cream transition hover:bg-charcoal disabled:opacity-50"
+            <p className="mb-5 text-xs text-muted">Pay with EVC Plus, ZAAD, Sahal, eDahab or card.</p>
+            <Link
+              href="/checkout"
+              onClick={() => setOpen(false)}
+              className="block w-full bg-ink py-4 text-center text-xs font-medium uppercase tracking-[0.3em] text-cream transition hover:bg-charcoal"
             >
-              {loading ? "Redirecting…" : "Checkout"}
-            </button>
+              Checkout
+            </Link>
           </div>
         )}
       </aside>
