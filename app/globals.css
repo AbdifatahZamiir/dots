@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Tailwind v4 only applies hover: on devices that report "hover: hover", which
+   touchscreen laptops often don't. Apply hover styles whenever the mouse is over. */
+@custom-variant hover (&:hover);
+
 /* DOTS brand palette (from the brand guide) */
 @theme {
   --color-ink: #0e0e0e; /* black */
@@ -112,13 +116,11 @@ html {
   opacity: 0;
   transition: opacity 0.5s ease;
 }
-@media (hover: hover) {
-  .cat-row:hover .cat-tile:not(:hover) {
-    filter: grayscale(0.75);
-  }
-  .cat-row:hover .cat-tile:not(:hover) .cat-wash {
-    opacity: 1;
-  }
+.cat-row:hover .cat-tile:not(:hover) {
+  filter: grayscale(0.75);
+}
+.cat-row:hover .cat-tile:not(:hover) .cat-wash {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
